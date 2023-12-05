@@ -1,7 +1,7 @@
 
 const fs = require('node:fs').promises;
 const { Router} = require('express');
-const ProductManager = require('../managers/productManager');
+const ProductManager = require('../../managers/productManager');
 
 const router = Router();
 const productsService = new ProductManager();
