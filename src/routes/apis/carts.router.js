@@ -1,10 +1,11 @@
-const { Router} = require('express');
+const { Router}    = require('express');
 const CartsManager = require('../../managers/cartManager')
 
-const router = Router();
+const router       = Router();
 const cartsService = new CartsManager();
 
 router
+
 //La ruta GET /:cid lista los productos que pertenezcan al carrito con el parámetro cid proporcionados.
 .get('/:cid', async (req, res) => {
     const {cid} = req.params
@@ -35,15 +36,14 @@ router
     .post('/:cid/product/:pid', async (req, res) => {
         const cid = req.params.cid;
         const pid = parseInt(req.params.pid);  
-    try {
-        const product = { id: pid };
-        const results = await cartsService.addProductToCart(parseInt(cid), product);
-
-        res.status(201).json({ message: 'Product added to cart successfully', results });
-    } catch (error) {
-        console.error('Error adding product to cart:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
+        try {
+            const product = { id: pid };
+            const results = await cartsService.addProductToCart(parseInt(cid), product);
+            res.status(201).json({ message: 'Product added to cart successfully', results });
+        } catch (error) {
+            console.error('Error adding product to cart:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
     })
 
 module.exports = router;

@@ -1,8 +1,8 @@
 const { Router }      = require('express');
-const ProductManager  = require('../../managers/productManager');
+const productDaoMongo = require('../../daos/Mongo/productDaoMongo');
 
 const router          = Router();
-const productsService = new ProductManager();
+const productsService = new productDaoMongo();
 
 router.get('/', async (req, res) => {
     const products = await productsService.getProducts();

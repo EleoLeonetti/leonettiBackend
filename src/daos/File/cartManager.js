@@ -1,4 +1,4 @@
-const fs = require('node:fs');
+const fs   = require('node:fs');
 const path = './src/mockDB/carts.json'
 
 class CartsManager {
@@ -6,8 +6,8 @@ class CartsManager {
         this.path = path;
     }
 
-    //Este método lee el JSON de carrito y devuelve el contenido en objeto Javascript
-    readFile = async () => {
+//Este método lee el JSON de carrito y devuelve el contenido en objeto Javascript
+   readFile = async () => {
         try{
             const data = await fs.promises.readFile(this.path, 'utf-8')
             console.log(data)
@@ -17,7 +17,7 @@ class CartsManager {
         }
     };
 
-    //Método para crear carrito asignandole un id y un array vacío de products. Agrega el carrito creado a los carritos existentes
+//Método para crear carrito asignandole un id y un array vacío de products. Agrega el carrito creado a los carritos existentes
     async createCart(){
         const carts = await this.readFile()
         const newCart = {id: carts.length + 1, products: [] }
@@ -26,7 +26,7 @@ class CartsManager {
         return results
     };
 
-    //Método para buscar y devolver un carrito por id
+//Método para buscar y devolver un carrito por id
     async getProductsInCart (cid){
         const carts = await this.readFile()
         const cart = carts.find(cart => cart.id ===cid)
@@ -36,7 +36,7 @@ class CartsManager {
         return cart.products
     };
 
-    //Método para agregar producto a un carrito especificado por id
+//Método para agregar producto a un carrito especificado por id
     async addProductToCart(cid, product){
         const carts = await this.readFile();
         const cartIndex = carts.findIndex(cart => cart.id === cid);
@@ -44,8 +44,7 @@ class CartsManager {
         return 'Cart not found';
         }
         const existingProductIndex = carts[cartIndex].products.findIndex(p => p.id === product.id);
-        if (existingProductIndex !== -1) {
-        // Si el producto que se intenta agregar ya está en el carrito, aumenta quantity
+        if (existingProductIndex !== -1) {        // Si el producto que se intenta agregar ya está en el carrito, aumenta quantity
         carts[cartIndex].products[existingProductIndex].quantity += 1;
     } else {
         // Si el producto no se encuentra agregado, se agrega con quantity 1
@@ -56,4 +55,4 @@ class CartsManager {
     }; 
 };
 
-module.exports = CartsManager;
+//module.exports = CartsManager;

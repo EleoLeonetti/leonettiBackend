@@ -1,4 +1,4 @@
-const fs = require('node:fs').promises;
+const fs   = require('node:fs').promises;
 const path = './src/mockDB/products.json'
 
 class ProductManager {
@@ -8,8 +8,8 @@ class ProductManager {
     this.path = path
   };
 
-  //Método para agregar productos. Chequea que ciertos campos no estén vacíos, que el código no se repita y asigna un id autoincrementable
-  async addProduct(title, description, code, price, status = true, stock, category, thumbnail = []) {
+//Método para agregar productos. Chequea que ciertos campos no estén vacíos, que el código no se repita y asigna un id autoincrementable
+  async addProduct(title, description, code, price, status = true, stock, category, thumbnail = []) {    
     if (!title || !description || !code || !price || !stock || !category) {
       console.log("Error: Invalid data");
     } else {
@@ -27,7 +27,6 @@ class ProductManager {
   
         const allProducts = JSON.parse(existingProducts);
         const newId = allProducts.length + 1;
-  
         const newProduct = { title, description, code, price, status, stock, category, thumbnail, id: newId };
         allProducts.push(newProduct);
         await fs.writeFile(this.path, JSON.stringify(allProducts, null, 2));
@@ -37,9 +36,7 @@ class ProductManager {
     }
   }
   
-  
-
-  //Método que lee el archivo de productos y devuelve los productos si hay algo o array vacío si no hay productos
+//Método que lee el archivo de productos y devuelve los productos si hay algo o array vacío si no hay productos
   async getProducts(limit) {
     const productsFile = await fs.readFile(this.path, 'utf-8');
     const allProducts = JSON.parse(productsFile);
@@ -50,7 +47,7 @@ class ProductManager {
     };
 };
 
-  //Método que recibe un id y busca y devuelve el producto con el id especificado
+//Método que recibe un id y busca y devuelve el producto con el id especificado
   async getProductById(id) {
       const productsFile = await fs.readFile(this.path, 'utf-8');
       const productById = JSON.parse(productsFile).find(item => item.id === id);     
@@ -61,7 +58,7 @@ class ProductManager {
       };
   };
 
-  //Método que recibe un id y campo a actualizar para modificar los datos del producto con ese id y actualizarlo en el archivo
+//Método que recibe un id y campo a actualizar para modificar los datos del producto con ese id y actualizarlo en el archivo
   async updateProduct(id, updatedFields) {
     const productsFile = await fs.readFile(this.path, 'utf-8');
     const products = JSON.parse(productsFile);
@@ -75,7 +72,8 @@ class ProductManager {
       console.log('Product data updated');
     };
 }
-  //Método que recibe un id y elimina el producto que tenga ese id
+  
+//Método que recibe un id y elimina el producto que tenga ese id
   async deleteProduct(id) {
     const productsFile = await fs.readFile(this.path, 'utf-8');
     const products = JSON.parse(productsFile);

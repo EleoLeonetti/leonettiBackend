@@ -1,57 +1,45 @@
-const express = require("express");
-const handlebars = require('express-handlebars');
-const { Server } = require('socket.io');
-const productsRouter = require('./routes/apis/products.router.js');
-const cartsRouter = require('./routes/apis/carts.router.js');
-const viewsRouter = require('./routes/views/home.router.js');
-const realTimeProductsRouter = require('./routes/views/realTimeProducts.router.js');
+const express       = require("express")
+const appRouter     = require('./routes')
+const { connectDb } = require("./config")
+const handlebars    = require('express-handlebars')
+const { Server }    = require('socket.io')
+const { chatModel, messageModel } = require('./daos/Mongo/models/chat.models.js')
 
-const app = express();
-const port = 8080;
-const serverHttp = app.listen(port, err =>{
-  if (err)  console.log(err)
-  console.log(`Escuchando en el puerto ${port}`)
+const app        = express()
+const PORT       = 8080
+const httpServer = app.listen(PORT, err => {
+    if (err) console.log(err)
+    console.log(`Server listening in port: ${PORT}`)
 })
+const io = new Server(httpServer)
 
-app.engine('hbs', handlebars.engine({
-  extname: '.hbs'
-}));
-app.set('view engine', '.hbs');
-app.set('views', './src/views');
+//Conexión a base de datos
+connectDb()
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 app.use(express.static('./src/public'))
 
-app.use('/api/products', productsRouter);
-app.use('/api/carts', cartsRouter);
-app.use('/home', viewsRouter);
-app.use('/realtimeproducts', realTimeProductsRouter);
+//Traigo archivo de configuración de rutas
+app.use(appRouter)
 
-const io = new Server(serverHttp);
+//Configuración handlebars
+app.engine('hbs', handlebars.engine({
+    extname: '.hbs'
+}));
+app.set('view engine', '.hbs')
+app.set('views', './src/views')
 
-let arrayProducts = []
-
+//Configuración del chat con socket (llevar a otro archivo?)
 io.on('connection', socket => {
-  console.log('Cliente conectado');
-
-  socket.on('newProduct', data => { 
-    arrayProducts.push(data) 
-    io.emit('productList', arrayProducts); 
-  });
-
-  
-  socket.on('deleteProduct', code => {
-    const indexToDelete = arrayProducts.findIndex(product => product.code === code);
-
-    if (indexToDelete !== -1) {
-        const deletedProduct = arrayProducts.splice(indexToDelete, 1)[0];
-        console.log('Producto eliminado:', deletedProduct);
-
-        io.emit('productList', arrayProducts);
-    } else {
-        console.error('Producto no encontrado para eliminar');
-        socket.emit('error', { message: 'Producto no encontrado para eliminar' });
-    }
-});
-});
+    console.log('New client connected')
+    socket.on('message', async (data) => {
+        const { user, message } = data
+        const newMessage = new messageModel({
+                user: user,
+                message: message
+            });
+        await newMessage.save()
+        io.emit('messageLogs', newMessage)
+    })
+})

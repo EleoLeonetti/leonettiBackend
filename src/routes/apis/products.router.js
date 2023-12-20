@@ -1,9 +1,9 @@
 
-const fs = require('node:fs').promises;
-const { Router} = require('express');
-const ProductManager = require('../../managers/productManager');
+const fs              = require('node:fs').promises;
+const { Router}       = require('express');
+const ProductManager  = require('../../managers/productManager');
 
-const router = Router();
+const router          = Router();
 const productsService = new ProductManager();
 
 router
@@ -28,7 +28,7 @@ router
             message: "Product not found"
         })
     }
-    res.send({
+        res.send({
         status: 'success',
         payload: product
     })
@@ -45,10 +45,9 @@ router
         });
       } catch (error) {
         console.error(error);
-    
         res.status(400).json({
-          status: 'error',
-          message: 'Error adding product'
+        status: 'error',
+        message: 'Error adding product'
         });
       }
 })
@@ -87,6 +86,5 @@ router
         message: 'Product deleted'
     })
 });
-
 
 module.exports = router;
