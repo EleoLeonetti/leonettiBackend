@@ -1,0 +1,23 @@
+<h1>PRODUCTOS</h1>
+
+{{#each products}}
+    <div>
+        <h3>{{title}}</h3>
+        <p>{{description}}</p>
+        <p>Categoría: {{category}}</p>
+        <p>Precio: ${{price}}.-</p>
+        <p>Stock: {{stock}}</p>
+        <button>Agregar al carrito</button>
+        <hr>
+    </div>
+{{/each}}
+
+<div>
+    {{#if prevLink}}
+        <a href="{{prevLink}}">Anterior</a>
+    {{/if}}
+    <label>{{page}}</label>
+    {{#if nextLink}}
+        <a href="{{nextLink}}">Siguiente</a>
+    {{/if}}
+    </div>

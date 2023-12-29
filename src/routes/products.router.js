@@ -7,17 +7,21 @@ const productService = new productDaoMongo()
 router
 
 //Ruta para traer todos los productos
-    .get('/', async (req, res) => {
-        try{
-            const products = await productService.getProducts()
-            res.send({
-                status: 'succes',
-                payload: products
-            })
-        }catch(error) {
-            console.log(error)
-        }
-    })
+.get('/', async (req, res) => {
+    const { limit, page, filter, sort } = req.query;
+
+    try {
+        const productsResponse = await productService.getProducts(filter, sort, Number(limit) || 10, Number(page) || 1)
+
+        res.send(productsResponse)
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            status: 'error',
+            message: 'Internal server error'
+        })
+    }
+})
 
 //Ruta para traer producto por id
     .get('/:pid', async (req, res) => { 
@@ -90,9 +94,8 @@ router
             res.status(400).json({
                 status: 'error',
                 message: 'Error'
-            });
+            })
         }
-    });
-
+    })
 
 module.exports = router
