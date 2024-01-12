@@ -3,6 +3,9 @@ const appRouter     = require('./routes')
 const { connectDb } = require("./config")
 const handlebars    = require('express-handlebars')
 const { Server }    = require('socket.io')
+const cookieParser  = require('cookie-parser')
+const session       = require('express-session')
+const mongoStore    = require('connect-mongo')
 const { chatModel, messageModel } = require('./daos/Mongo/models/chat.models.js')
 
 const app        = express()
@@ -19,6 +22,20 @@ connectDb()
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static('./src/public'))
+app.use(cookieParser('KgiKpiGVfBMuYcU'))
+app.use(session({
+    store: mongoStore.create({
+        mongoUrl: 'mongodb+srv://eleonetti:kHpGxq3spyt4SfHJ@cluster0.soxzojq.mongodb.net/ecommerce?retryWrites=true&w=majority',
+        mongoOptions: {
+            //useNewUrlParser: true,
+            //useUnifiedTopology: true,
+        },
+        ttl: 15000000000,
+    }),
+    secret: 'secretCoder',
+    resave: true,
+    saveUninitialized: true
+}))
 
 //Traigo archivo de configuración de rutas
 app.use(appRouter)

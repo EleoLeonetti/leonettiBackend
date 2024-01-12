@@ -1,5 +1,5 @@
-const { Router }      = require('express');
-const productDaoMongo = require('../../daos/Mongo/productDaoMongo');
+const { Router }      = require('express')
+const productDaoMongo = require('../../daos/Mongo/productDaoMongo')
 
 const router          = Router();
 const productsService = new productDaoMongo();
@@ -38,7 +38,5 @@ router.get('/', async (req, res) => {
         res.status(500).send('Error fetching products');
     }
 });
-
-
 
 module.exports = router;

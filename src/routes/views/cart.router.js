@@ -4,7 +4,6 @@ const cartDaoMongo = require('../../daos/Mongo/cartDaoMongo.js');
 const router          = Router();
 const cartService = new cartDaoMongo();
 
-// Dentro de tu archivo de rutas
 router.get('/:cid', async (req, res) => {
     const { cid } = req.params;
 
