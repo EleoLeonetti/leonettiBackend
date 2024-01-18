@@ -1,3 +1,9 @@
+<button id="logoutBtn">Logout</button>
+
+{{#if user}}
+<h2>Hola {{user.first_name}} !</h2>
+{{/if}}
+
 <h1>PRODUCTOS</h1>
 
 {{#each products}}
@@ -21,3 +27,12 @@
         <a href="{{nextLink}}">Siguiente</a>
     {{/if}}
     </div>
+
+
+    <script>
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    logoutBtn.addEventListener('click', function() {
+        window.location.href = '/api/sessions/logout'
+    })
+</script>

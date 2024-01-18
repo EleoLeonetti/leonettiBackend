@@ -1,12 +1,15 @@
 const express       = require("express")
 const appRouter     = require('./routes')
-const { connectDb } = require("./config")
 const handlebars    = require('express-handlebars')
-const { Server }    = require('socket.io')
+const mongoStore    = require('connect-mongo')
 const cookieParser  = require('cookie-parser')
 const session       = require('express-session')
-const mongoStore    = require('connect-mongo')
+const passport      = require('passport')
+const { connectDb } = require("./config")
+const { Server }    = require('socket.io')
 const { chatModel, messageModel } = require('./daos/Mongo/models/chat.models.js')
+const { initializePassport, initializePassportGit }      = require("./config/passport.config.js")
+
 
 const app        = express()
 const PORT       = 8080
@@ -16,26 +19,25 @@ const httpServer = app.listen(PORT, err => {
 })
 const io = new Server(httpServer)
 
-//Conexión a base de datos
 connectDb()
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static('./src/public'))
 app.use(cookieParser('KgiKpiGVfBMuYcU'))
+
+//passport-local
+initializePassport()
+//passport-github
+initializePassportGit()
 app.use(session({
-    store: mongoStore.create({
-        mongoUrl: 'mongodb+srv://eleonetti:kHpGxq3spyt4SfHJ@cluster0.soxzojq.mongodb.net/ecommerce?retryWrites=true&w=majority',
-        mongoOptions: {
-            //useNewUrlParser: true,
-            //useUnifiedTopology: true,
-        },
-        ttl: 15000000000,
-    }),
-    secret: 'secretCoder',
-    resave: true,
-    saveUninitialized: true
+    secret: 'KgiKpiGVfBMuYcU'
 }))
+app.use(passport.initialize())
+app.use(passport.session())
+
+
+
 
 //Traigo archivo de configuración de rutas
 app.use(appRouter)
