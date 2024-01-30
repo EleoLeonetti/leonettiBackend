@@ -70,8 +70,8 @@ router
         try {
             const { pid } = req.params;
             const productToUpdate = req.body;
-            const updatedProduct = await productService.updateProduct(pid, productToUpdate);
-            res.send(updatedProduct);
+            const updatedProduct = await productService.updateProduct(pid, productToUpdate)
+            res.send(updatedProduct)
         } catch (err) {
             res.status(400).send({
                 status: 'error',
@@ -82,7 +82,7 @@ router
 
 //Ruta para borrar producto por id
     .delete('/:pid', async (req, res) => {
-        const { pid } = req.params;
+        const { pid } = req.params
         try {
             const productToDelete = await productService.deleteProduct(pid);
             res.status(200).json({

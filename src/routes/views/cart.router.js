@@ -1,7 +1,7 @@
-const { Router }      = require('express');
+const { Router }   = require('express');
 const cartDaoMongo = require('../../daos/Mongo/cartDaoMongo.js');
 
-const router          = Router();
+const router      = Router();
 const cartService = new cartDaoMongo();
 
 router.get('/:cid', async (req, res) => {
@@ -21,8 +21,5 @@ router.get('/:cid', async (req, res) => {
         });
     }
 });
-
-
-
 
 module.exports = router;

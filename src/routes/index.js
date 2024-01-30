@@ -12,15 +12,14 @@ const viewsLoginRouter    = require('./views/login.router.js')
 const router = Router()
 
 router.use('/api/products', productsRouter)
-router.use('/products',     viewsProductsRouter)
 router.use('/api/carts',    cartsRouter)
-router.use('/carts',        viewsCartRouter)
 router.use('/api/messages', messagesRouter)
+router.use('/products',     viewsProductsRouter)
+router.use('/carts',        viewsCartRouter)
 router.use('/chat',         chatRouter)
-router.use('/register',     registerRouter)
-//Desafío clase 21: Refactor a nuestro login
-//router.use('/api/users', userRouter) //Crear para crud users
+
 router.use('/api/sessions', sessionsRouter)
-router.use('/',             viewsLoginRouter)
+router.use('/register',     registerRouter)
+router.use('/login',        viewsLoginRouter)
 
 module.exports = router

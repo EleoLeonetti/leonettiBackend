@@ -1,51 +1,85 @@
-const { Router } = require('express')
-const passport   = require('passport')
-const { usersModel } = require('../daos/Mongo/models/users.models')
-const { createHash, isValidPassword } = require('../utils/hashPassword')
+const { Router }       = require('express')
+const passport         = require('passport')
+const userDaoMongo     = require('../daos/Mongo/userDaoMongo')
+const { passportCall } = require('../utils/passportCall.js')
+const { createHash, isValidPassword }      = require('../utils/hashPassword')
+const { createToken, authenticationToken } = require('../utils/jwt.js')
+const { authorizationJwt }                 = require('../middlewars/jwtPassport.middleware.js')
 
-const router = Router()
+const router       = Router()
+const usersService = new userDaoMongo()
 
-//passport-local
-router.post('/register', passport.authenticate('register', {failureRedirect: '/api/sessions/failregister'}),(req, res)=>{
-    res.json({status: 'success', message: 'user created'})
-})
-
-router.get('/failregister', (req, res) =>{
-    console.log('Fail strategy')
-    res.send({status: 'error', error: 'Failed'})
-})
-
-router.post('/login', passport.authenticate('login',{failureRedirect: '/api/sessions/faillogin'}), async (req, res) => {
-    if(!req.user) return res.status(400).send({status: 'error', error: 'Invalid credentials'})
-    req.session.user = {
-        first_name: req.user.first_name,
-        last_name: req.user.last_name,
-        email: req.user.email,
-        role: req.user.role
+router.post('/register', async (request, response) => {
+    const { first_name, last_name, birthdate, email, role, password } = request.body
+    if(first_name === '' || last_name === '' || birthdate === '' || email === '' || password === ''){
+        return response.send('All fields are required')
     }
-    if(req.user.email === 'adminCoder@coder.com'){
-        return res.json({status: 'success', message: 'Admin'})
+
+    const user = await usersService.getUserBy({email})
+    if(user) return response.status(401).send({status: 'error', message: 'The email is already registered'})
+
+    const newUser = {
+        first_name,
+        last_name,
+        birthdate,
+        email,
+        role,
+        password: createHash(password)
     }
-    res.redirect('/products')
-})
 
-router.get('/faillogin', (req, res) => {
-    res.send({error: 'Failed login'})
-})
+    if(newUser.email === 'adminCoder@coder.com' || newUser.password === 'adminCod3r123'){
+        newUser.role = 'admin'
+    }
 
-router.get('/logout', (req, res) => {
-    req.session.destroy(err =>{
-        if(err) return res.send({status: 'error', error: err})
+    let result = await usersService.createUser(newUser)
+    console.log(result)
+    
+    const token = createToken({
+        id: result._id
     })
-res.redirect('/')
+
+    response.cookie('token', token, {
+        maxAge: 60 * 60 * 1000 * 24,
+        httpOnly: true
+    }).send({
+        status: 'Success',
+        message: 'Registered'
+        })
 })
 
-//passport-github
-router.get('/github', passport.authenticate('github', {scope: ['user: email']}), async (req, res) => {})
+router.post('/login', async (request, response) => {
+    const { email, password } = request.body
+    if(email === '' || password === ''){
+        return response.send('All fields are required')
+    }
 
-router.get('/githubcallback', passport.authenticate('github', {failureRedirect: '/login'}), (req, res) => {
-    req.session.user = req.user
-    res.redirect('/products')
+    const user = await usersService.getUserBy({email})
+    console.log(user)
+    if(!user) return response.status(401).send({status: 'error', message: 'Wrong email or password'})
+
+    if(!isValidPassword(password, {password: user.password})) return response.status(401).send({status: 'error', message: 'Wrong email or password'})
+
+    const token = createToken({
+        id: user._id,
+        email: user.email,
+        role: user.role
+    })
+
+    response.cookie('token', token, {
+        maxAge: 60 * 60 * 1000 * 24,
+        httpOnly: true
+    }).send({
+        status: 'Success',
+        message: 'Logged in'
+        })
+})
+
+router.get('/current', passportCall('jwt'), authorizationJwt('admin'), (req, res) => {
+    res.send({message: 'Datos sensibles', reqUser: req.user})
+})
+
+router.post('/logout', (request, response) => {
+    response.clearCookie('token').redirect('/login')
 })
 
 module.exports = router

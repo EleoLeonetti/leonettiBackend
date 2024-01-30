@@ -10,7 +10,7 @@ router.get('/', async (req, res) => {
     const userId = req.session && req.session.user ? req.session.user.user : null
     const user = await usersModel.findOne({_id: userId}).lean() 
     if (user) {
-        req.session.user = { user_id: user._id, first_name: user.first_name };
+        req.session.user = { user_id: user._id, first_name: user.first_name }
     }
     console.log(user)
     console.log(req.session.user)
@@ -43,7 +43,7 @@ router.get('/', async (req, res) => {
             nextLink
         });
     } catch (error) {
-        console.log(error);
+        console.log(error)
         res.status(500).send('Error fetching products')
     }
 });

@@ -24,20 +24,11 @@ connectDb()
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static('./src/public'))
-app.use(cookieParser('KgiKpiGVfBMuYcU'))
+app.use(cookieParser('p@l@br@Secret@'))
 
-//passport-local
+
 initializePassport()
-//passport-github
-initializePassportGit()
-app.use(session({
-    secret: 'KgiKpiGVfBMuYcU'
-}))
 app.use(passport.initialize())
-app.use(passport.session())
-
-
-
 
 //Traigo archivo de configuración de rutas
 app.use(appRouter)

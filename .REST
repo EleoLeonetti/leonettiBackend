@@ -1,0 +1,71 @@
+###
+POST http://localhost:8080/api/sessions/register
+Content-Type: application/json
+
+{
+    "first_name": "",
+    "last_name": "Leonetti",
+    "birthdate": "01/03/1988",
+    "email": "eleo@leonetti.com",
+    "password": "Eleo123"
+}
+
+###
+POST http://localhost:8080/api/sessions/register
+Content-Type: application/json
+
+{
+    "first_name": "Eleo",
+    "last_name": "Leonetti",
+    "birthdate": "01/03/1988",
+    "email": "eleo@leonetti.com",
+    "password": "Eleo123"
+}
+
+###
+POST http://localhost:8080/api/sessions/login
+Content-Type: application/json
+
+{
+    "email": "eleo@leonetti.com",
+    "password": "Eleo"
+}
+
+###
+POST http://localhost:8080/api/sessions/login
+Content-Type: application/json
+
+{
+    "email": "eleo@leonetti.com",
+    "password": "Eleo123"
+}
+
+###
+GET http://localhost:8080/api/sessions/current
+
+###
+POST http://localhost:8080/api/sessions/logout
+
+###
+POST http://localhost:8080/api/sessions/register
+Content-Type: application/json
+
+{
+    "first_name": "Coder",
+    "last_name": "House",
+    "birthdate": "01/03/1988",
+    "email": "adminCoder@coder.com",
+    "password": "adminCod3r123"
+}
+
+###
+POST http://localhost:8080/api/sessions/login
+Content-Type: application/json
+
+{
+    "email": "adminCoder@coder.com",
+    "password": "adminCod3r123"
+}
+
+###
+GET http://localhost:8080/api/sessions/current

@@ -13,13 +13,13 @@ async createCart(newCartData){
         quantity: 1  
     }))
 
-    const newCart = new cartModel({ products: productsWithQuantity });
+    const newCart = new cartModel({ products: productsWithQuantity })
 
     try {
-        const savedCart = await newCart.save();
-        return savedCart;
+        const savedCart = await newCart.save()
+        return savedCart
     } catch (error) {
-        throw new Error('Failed to create cart');
+        throw new Error('Failed to create cart')
     }
 }
 
@@ -47,13 +47,13 @@ async addProductToCart(cid, pid){
 //Método para buscar y devolver un carrito por id 
 async getCart(cid) {
     try {
-        const cart = await this.model.find({ _id: cid }).lean().populate('products.product');
+        const cart = await this.model.find({ _id: cid }).lean().populate('products.product')
         if (!cart || cart.length === 0) {
-            console.log('Cart not found');
+            console.log('Cart not found')
         }
-        return cart[0].products; 
+        return cart[0].products
     } catch (error) {
-        console.log(`Failed to get cart`);
+        console.log(`Failed to get cart`)
     }
 }
 
@@ -66,7 +66,7 @@ async removeProductFromCart(cid, pid) {
             return null
         }
 
-        const productIndex = cart.products.findIndex(item => item.product.toString() === pid);
+        const productIndex = cart.products.findIndex(item => item.product.toString() === pid)
 
         if (productIndex === -1) {
             return null
@@ -77,7 +77,7 @@ async removeProductFromCart(cid, pid) {
         return cart
 
     } catch (error) {
-        console.log('Failed to remove product from cart');
+        console.log('Failed to remove product from cart')
     }
 }
 
@@ -97,7 +97,7 @@ async clearCart(cid) {
         return { message: 'Cart cleared successfully' }
 
     } catch (error) {
-        throw new Error('Failed to clear cart');
+        throw new Error('Failed to clear cart')
     }
 }
 

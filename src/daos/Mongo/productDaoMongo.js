@@ -8,18 +8,18 @@ class productDaoMongo {
 
 //Método para mostrar los productos en base de datos
 async getProducts(filter, sort, limit = 10, page = 1) {
-    let filterObject = { isActive: true };
+    let filterObject = { isActive: true }
     if (filter) {
         filterObject.category = filter
     }
     let sortObject = {};
     if (sort === 'asc') {
-        sortObject.price = 1;
+        sortObject.price = 1
     } else if (sort === 'desc') {
-        sortObject.price = -1;
+        sortObject.price = -1
     }
     try {
-        return await this.model.paginate(filterObject, {limit, page, sort: sortObject, lean: true });
+        return await this.model.paginate(filterObject, {limit, page, sort: sortObject, lean: true })
     } catch (error) {
         console.log('Error fetching products')
     }
