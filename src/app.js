@@ -5,14 +5,14 @@ const mongoStore    = require('connect-mongo')
 const cookieParser  = require('cookie-parser')
 const session       = require('express-session')
 const passport      = require('passport')
-const { connectDb } = require("./config")
+const { connectDb, configObject } = require("./config")
 const { Server }    = require('socket.io')
 const { chatModel, messageModel } = require('./daos/Mongo/models/chat.models.js')
 const { initializePassport, initializePassportGit }      = require("./config/passport.config.js")
 
 
 const app        = express()
-const PORT       = 8080
+const PORT       = configObject.PORT
 const httpServer = app.listen(PORT, err => {
     if (err) console.log(err)
     console.log(`Server listening in port: ${PORT}`)
