@@ -9,7 +9,7 @@ const { connectDb, configObject } = require("./config")
 const { Server }    = require('socket.io')
 const { chatModel, messageModel } = require('./daos/Mongo/models/chat.models.js')
 const { initializePassport, initializePassportGit }      = require("./config/passport.config.js")
-
+const cors = require('cors')
 
 const app        = express()
 const PORT       = configObject.PORT
@@ -25,6 +25,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static('./src/public'))
 app.use(cookieParser('p@l@br@Secret@'))
+app.use(cors())
 
 
 initializePassport()

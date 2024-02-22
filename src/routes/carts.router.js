@@ -1,31 +1,31 @@
-const { Router }    = require('express')
-const CartController = require('../controllers/carts.controller.js')
+const { Router }           = require('express')
+const { passportCall }     = require('../utils/passportCall.js')
+const { authorizationJwt } = require('../middlewars/jwtPassport.middleware.js')
+const CartController       = require('../controllers/carts.controller.js')
 
-const router       = Router()
+const router = Router()
+
 const {
+    getCarts,
+    getCart,
     createCart,
-    getCartById,
+    deleteCart,
     addProductToCart,
-    deleteProductFromCart,
-    deleteAllProductsFromCart,
-    updateCartProducts,
-    updateProductQuantity
+    updateProductQuantity,
+    removeProduct,
+    clearCart,
+    endPurchase
  } = new CartController()
 
 router
-
-    .post('/', createCart)
-
-    .get('/:cid', getCartById )
-    
-    .post('/:cid/product/:pid', addProductToCart)
-
-    .delete('/:cid/products/:pid', deleteProductFromCart)
-
-    .delete('/:cid', deleteAllProductsFromCart)
-
-    .put('/:cid', updateCartProducts)
-
-    .put('/:cid/products/:pid', updateProductQuantity)
+    .get('/',                      getCarts)
+    .get('/:cid',                  getCart)
+    .post('/',                     createCart)
+    .delete('/:cid',               deleteCart)
+    .post('/:cid/product/:pid',    passportCall('jwt'), authorizationJwt('user'), addProductToCart)
+    .put('/:cid/product/:pid',     updateProductQuantity)
+    .delete('/:cid/products/:pid', removeProduct)
+    .delete('/clear/:cid',         clearCart)
+    .put('/:cid/purchase',         endPurchase)
 
 module.exports = router

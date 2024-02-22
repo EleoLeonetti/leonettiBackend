@@ -1,85 +1,99 @@
-const passport        = require('passport')
-const userDaoMongo    = require('../daos/Mongo/userDaoMongo.js')
-const { createToken } = require('../utils/jwt.js')
-const { createHash, isValidPassword } = require('../utils/hashPassword.js')
+const passport            = require('passport')
+const UserController      = require('./users.controller.js')
+const { userService }     = require('../repositories/index.js')
+const { createToken }     = require('../utils/jwt.js')
+const { isValidPassword } = require('../utils/hashPassword.js')
+const { createHash }      = require('../utils/hashPassword.js')
 
 class SessionController {
     constructor(){
-        this.usersService = new userDaoMongo()
+        this.service  = userService
+        this.uService = new UserController()
     }
 
-    register = async (request, response) => {
-        const { first_name, last_name, birthdate, email, role, password } = request.body
-        if(first_name === '' || last_name === '' || birthdate === '' || email === '' || password === ''){
-            return response.send('All fields are required')
-        }
-    
-        const user = await this.usersService.getUserBy({email})
-        if(user) return response.status(401).send({status: 'error', message: 'The email is already registered'})
-    
-        const newUser = {
-            first_name,
-            last_name,
-            birthdate,
-            email,
-            role,
-            password: createHash(password)
-        }
-    
-        if(newUser.email === 'adminCoder@coder.com' || newUser.password === 'adminCod3r123'){
-            newUser.role = 'admin'
-        }
-    
-        let result = await this.usersService.createUser(newUser)
-        console.log(result)
+    register = async (req, res) => {
+        try {
+            const { first_name, last_name, birthdate, email, role, password } = req.body
+            if(first_name === '' || last_name === '' || birthdate === '' || email === '' || password === ''){
+                return res.send({status: 'error', message: "All fields are required"})
+            }
+            const user = await this.service.getUser({email})
+            if(user) {
+                return res.send({status: 'error', message: 'Email already exist'})
+            }
+
+            const newUser = {
+                first_name,
+                last_name,
+                birthdate,
+                email,
+                role,
+                password: createHash(password)
+            }
         
-        const token = createToken({
-            id: result._id
-        })
-    
-        response.cookie('token', token, {
-            maxAge: 60 * 60 * 1000 * 24,
-            httpOnly: true
-        }).send({
-            status: 'Success',
-            message: 'Registered'
+            if(newUser.email === 'adminCoder@coder.com'){
+                newUser.role = 'admin'
+            }
+        
+            let result = await this.service.createUser(newUser)
+
+            const token = createToken({
+                id: result._id
             })
+
+            res.cookie('token', token, {
+                maxAge: 60 * 60 * 1000 * 24,
+                httpOnly: true
+            }).send({status: 'Success', message: 'Registered'})
+            
+        } catch (error) {
+            res.status(500).send({status: 'error', message: error.message})
+        }    
     }
 
-    login = async (request, response) => {
 
-        const { email, password } = request.body
-        if(email === '' || password === ''){
-            return response.send('All fields are required')
+    login = async (req, res) => {
+        try {
+            const { email, password } = req.body
+            if(email === '' || password === ''){
+                return res.send({status: 'error', message: "All fields are required"})
+            }
+    
+            const user = await this.service.getUser({email})
+            if(!user) return res.status(401).send({status: 'error', message: 'Wrong email or password'})
+    
+            if(!isValidPassword(password, {password: user.password})) return res.status(401).send({status: 'error', message: 'Wrong email or password'})
+    
+            const token = createToken({
+                id: user._id,
+                email: user.email,
+                role: user.role
+            })
+    
+            res.cookie('token', token, {
+                maxAge: 60 * 60 * 1000 * 24,
+                httpOnly: true
+            }).send({status: 'Success', message: 'Logged in'})
+        } catch (error) {
+            res.status(500).send({status: 'error', message: error.message})
         }
-    
-        const user = await this.usersService.getUserBy({email})
-        console.log(user)
-        if(!user) return response.status(401).send({status: 'error', message: 'Wrong email or password'})
-    
-        if(!isValidPassword(password, {password: user.password})) return response.status(401).send({status: 'error', message: 'Wrong email or password'})
-    
-        const token = createToken({
-            id: user._id,
-            email: user.email,
-            role: user.role
-        })
-    
-        response.cookie('token', token, {
-            maxAge: 60 * 60 * 1000 * 24,
-            httpOnly: true
-        }).send({
-            status: 'Success',
-            message: 'Logged in'
-            })
+        
     }
 
-    logout = (request, response) => {
-        response.clearCookie('token').redirect('/login')
+    logout = (req, res) => {
+        try {
+            res.clearCookie('token').send({status: 'Success', message: 'Logged out'})
+        } catch (error) {
+            res.status(500).send({status: 'error', message: error.message})
+        }   
     }
 
     authorization = (req, res) => {
-        res.send({message: 'Datos sensibles', reqUser: req.user})
+        try {
+            res.send({message: 'User info', reqUser: req.user})
+        } catch (error) {
+            res.status(500).send({status: 'error', message: error.message})
+        }
     }
 }
 

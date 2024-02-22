@@ -12,7 +12,19 @@ const cartSchema = new Schema({
                 default: 1 
             }
         }]
-    }
+    },
+    purchase: {
+        type: Boolean,
+        default: false
+    },
+    productsWithStock: [{
+        type: Schema.Types.ObjectId,
+        ref: 'products'
+    }],
+    productsWithoutStock: [{
+        type: Schema.Types.ObjectId,
+        ref: 'products'
+    }]
 })
 
 cartSchema.pre('find', function(){

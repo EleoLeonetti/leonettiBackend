@@ -1,6 +1,7 @@
-const { connect } = require('mongoose')
-const dotenv      = require('dotenv')
-const { program } = require('../utils/commander.js')
+const { connect }        = require('mongoose')
+const dotenv             = require('dotenv')
+const { program }        = require('../utils/commander.js')
+const { MongoSingleton } = require('../utils/mongoSingleton.js')
 
 const { mode } = program.opts()
 console.log('mode config: ', mode)
@@ -16,8 +17,7 @@ const configObject = {
 }
 
 const connectDb = async() => {
-    await connect(process.env.MONGO_URL)
-    console.log('Database connected')
+    MongoSingleton.getInstance(process.env.MONGO_URL)
 } 
 
 module.exports = {

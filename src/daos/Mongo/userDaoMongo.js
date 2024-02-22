@@ -2,32 +2,19 @@ const { usersModel } = require('../Mongo/models/users.models.js')
 
 class userDaoMongo {
     constructor() {
-        this.usersModel = usersModel
+        this.model = usersModel
     }
 
-    async getUsersPaginate(limit= 10, page= 1){
-        return await this.usersModel.paginate({}, {limit, page, lean: true})
-    } 
+    get    = async() => this.model.find({})
 
-    async getUsers(){
-        return await this.usersModel.find({})
-    }
+    getBy  = async (filter) => this.model.findOne(filter)
 
-    async getUserBy(filter){
-        return await this.usersModel.findOne(filter)
-    }
+    create = async (newUser) => this.model.create(newUser)
 
-    async createUser(newUser){
-        return await this.usersModel.create(newUser)
-    }
+    update = async (uid, userToUpdate) => this.model.findByIdAndUpdate({_id: uid}, userToUpdate, {new: true})
 
-    async updateUser(uid, userUpdate){
-        return await this.usersModel.findOneAndUpdate({_id: uid}, userUpdate)
-}
-
-    async deleteUser(uid){
-        return await this.usersModel.findOneAndDelete({_id: uid})
-    } 
+    delete = async (uid) => this.model.findByIdAndDelete({_id: uid}, {new: true})
+    
 }
 
 module.exports = userDaoMongo

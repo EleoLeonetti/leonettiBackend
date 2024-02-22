@@ -1,25 +1,23 @@
-const { Router }      = require('express')
-const ProductController = require('../controllers/products.controller.js')
+const { Router }           = require('express')
+const { passportCall }     = require('../utils/passportCall.js')
+const { authorizationJwt } = require('../middlewars/jwtPassport.middleware.js')
+const ProductController    = require('../controllers/products.controller.js')
 
-const router         = Router()
+const router = Router()
+
 const {
     getProducts,
-    getProductById,
-    addProduct,
+    getProduct,
+    createProduct,
     updateProduct,
     deleteProduct
 } = new ProductController()
 
 router
-
-    .get('/', getProducts)
-
-    .get('/:pid', getProductById )
-
-    .post('/', addProduct)
-
-    .put('/:pid', updateProduct)
-
-    .delete('/:pid', deleteProduct)
+    .get('/',        getProducts)
+    .get('/:pid',    getProduct)
+    .post('/',       passportCall('jwt'), authorizationJwt('admin'), createProduct)
+    .put('/:pid',    passportCall('jwt'), authorizationJwt('admin'), updateProduct)
+    .delete('/:pid', passportCall('jwt'), authorizationJwt('admin'), deleteProduct)
 
 module.exports = router
