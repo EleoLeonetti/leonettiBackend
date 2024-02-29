@@ -8,6 +8,7 @@ const usersRouter         = require('./users.router.js')
 const sessionsRouter      = require('./sessions.router.js')
 const ticketsRouter       = require('./tickets.router.js')
 const messagesRouter      = require('./views/chat.router.js')
+const pruebasRouter       = require('./pruebas.router.js')
 
 const router = Router()
 
@@ -17,5 +18,11 @@ router.use('/api/users',    usersRouter)
 router.use('/api/sessions', sessionsRouter)
 router.use('/api/tickets',  ticketsRouter)
 router.use('/api/messages', passportCall('jwt'), authorizationJwt('user'), messagesRouter)
+router.use('/api/pruebas',  pruebasRouter)
+
+router.use((err, req, res, next) =>{
+    console.log(err)
+    res.status(500).send(`Error Server ${err}`)
+})
 
 module.exports = router

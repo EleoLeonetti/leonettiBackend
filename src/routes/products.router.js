@@ -16,7 +16,7 @@ const {
 router
     .get('/',        getProducts)
     .get('/:pid',    getProduct)
-    .post('/',       passportCall('jwt'), authorizationJwt('admin'), createProduct)
+    .post('/',       createProduct)
     .put('/:pid',    passportCall('jwt'), authorizationJwt('admin'), updateProduct)
     .delete('/:pid', passportCall('jwt'), authorizationJwt('admin'), deleteProduct)
 

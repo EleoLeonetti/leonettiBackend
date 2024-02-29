@@ -139,3 +139,17 @@ Content-Type: application/json
 ###
 POST http://localhost:8080/api/tickets/65d6d214e193f9178464317a
 
+
+###
+POST http://localhost:8080/api/products
+Content-Type: application/json
+
+{
+    "code": "abcPRUEBA",
+    "price": 200,
+    "status": true,
+    "stock": 50,
+    "category": "AA",
+    "thumbnails": "producto de PRUEBA",
+    "isActive": true
+}

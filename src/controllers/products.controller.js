@@ -1,4 +1,7 @@
 const { productService } = require('../repositories/index.js')
+const CustomError        = require('../services/errors/CustomError.js')
+const { EErrors } = require('../services/errors/enums.js')
+const { generateProductErrorInfo } = require('../services/errors/generateProductErrorInfo.js')
 
 class ProductController {
     constructor() {
@@ -34,23 +37,30 @@ class ProductController {
      }
 
 
-     createProduct = async (req, res) => {
-        const newProduct = req.body
-        try{
-            if(!newProduct.title || !newProduct.description || !newProduct.code || !newProduct.price || !newProduct.stock || !newProduct.category || !newProduct.thumbnails){
-                return res.status(400).send({status: 'error', error: 'Missing data. Complete mandatory fields'})
+     createProduct = async (req, res, next) => {
+        const newProduct = req.body;
+        try {
+            const requiredFields = ['title', 'description', 'code', 'price', 'stock', 'category', 'thumbnails'];
+            const missingFields = requiredFields.filter(field => !newProduct.hasOwnProperty(field));
+    
+            if (missingFields.length > 0) {
+                CustomError.createError({
+                    name: 'Product creation error',
+                    cause: generateProductErrorInfo(newProduct),
+                    message: `Missing data. Complete mandatory fields: ${missingFields.join(', ')}`,
+                    code: EErrors.INVALID_TYPES_ERROR
+                });
             }
-
-            const productCode = await this.service.getProduct({code: newProduct.code})
-            if(productCode){
-                return res.status(400).send({status: 'error', error: 'Repeated code'})
+    
+            const productCode = await this.service.getProduct({ code: newProduct.code });
+            if (productCode) {
+                return res.status(400).send({ status: 'error', error: 'Repeated code' });
             }
-
-            const result = await this.service.createProduct(newProduct)
-            res.send({status:'Product created', payload: result})
-
-        }catch(error){
-            res.status(500).send({status: 'error', message: error.message})
+    
+            const result = await this.service.createProduct(newProduct);
+            res.send({ status: 'Product created', payload: result });
+        } catch (error) {
+            next(error);
         }
     }
 
