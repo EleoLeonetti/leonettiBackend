@@ -16,6 +16,7 @@ class CartController {
             res.send({status: 'success', payload: carts})
 
         } catch (error) {
+            logger.error(err)
             res.status(500).send({status: 'error', message: error.message})
         }
     }

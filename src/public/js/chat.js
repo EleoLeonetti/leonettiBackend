@@ -11,7 +11,6 @@ Swal.fire({
     }
 }).then(result => {
     user = result.value
-    console.log(user)
 })
 
 chatBox.addEventListener('keyup', e =>{

@@ -9,6 +9,7 @@ const sessionsRouter      = require('./sessions.router.js')
 const ticketsRouter       = require('./tickets.router.js')
 const messagesRouter      = require('./views/chat.router.js')
 const pruebasRouter       = require('./pruebas.router.js')
+const { logger } = require('../utils/logger.js')
 
 const router = Router()
 
@@ -21,7 +22,7 @@ router.use('/api/messages', passportCall('jwt'), authorizationJwt('user'), messa
 router.use('/api/pruebas',  pruebasRouter)
 
 router.use((err, req, res, next) =>{
-    console.log(err)
+    logger.fatal(err)
     res.status(500).send(`Error Server ${err}`)
 })
 

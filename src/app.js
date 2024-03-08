@@ -10,12 +10,13 @@ const { Server }    = require('socket.io')
 const { chatModel, messageModel } = require('./daos/Mongo/models/chat.models.js')
 const { initializePassport, initializePassportGit }      = require("./config/passport.config.js")
 const cors = require('cors')
+const { addLogger, logger } = require("./utils/logger.js")
 
 const app        = express()
 const PORT       = configObject.PORT
 const httpServer = app.listen(PORT, err => {
-    if (err) console.log(err)
-    console.log(`Server listening in port: ${PORT}`)
+    if (err) logger.fatal(err)
+    logger.info(`Server listening in port: ${PORT}`)
 })
 const io = new Server(httpServer)
 
@@ -31,6 +32,8 @@ app.use(cors())
 initializePassport()
 app.use(passport.initialize())
 
+app.use(addLogger)
+
 //Traigo archivo de configuración de rutas
 app.use(appRouter)
 
@@ -43,7 +46,7 @@ app.set('views', './src/views')
 
 //Configuración del chat con socket (llevar a otro archivo?)
 io.on('connection', socket => {
-    console.log('New client connected')
+    logger.info('New client connected')
     socket.on('message', async (data) => {
         const { user, message } = data
         const newMessage = new messageModel({

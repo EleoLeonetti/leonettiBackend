@@ -12,8 +12,6 @@ router.get('/', async (req, res) => {
     if (user) {
         req.session.user = { user_id: user._id, first_name: user.first_name }
     }
-    console.log(user)
-    console.log(req.session.user)
 
     try {
         const {
@@ -43,7 +41,7 @@ router.get('/', async (req, res) => {
             nextLink
         });
     } catch (error) {
-        console.log(error)
+        logger.error(error)
         res.status(500).send('Error fetching products')
     }
 });

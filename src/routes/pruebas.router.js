@@ -28,4 +28,13 @@ router.get('/mockingproducts', (req, res) => {
     })
 })
 
+router.get('/loggerTest', (req, res) => {
+    req.logger.fatal('alert: fatal')
+    req.logger.error('alert: error')
+    req.logger.warning('alert: warning')
+    req.logger.info('info')
+    req.logger.info('debug')
+    res.send('logger')
+})
+
 module.exports = router
