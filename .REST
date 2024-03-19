@@ -67,11 +67,11 @@ POST http://localhost:8080/api/users
 Content-Type: application/json
 
 {
-    "first_name": "l",
-    "last_name": "r",
+    "first_name": "Eleo",
+    "last_name": "Nora",
     "birthdate": "01/03/1985",
-    "email": "l@r.com",
-    "password": "lr123"
+    "email": "archivoeleo@gmail.com",
+    "password": "en123"
 }
 
 ###
@@ -106,8 +106,8 @@ POST http://localhost:8080/api/sessions/login
 Content-Type: application/json
 
 {
-    "email": "eleo@leonetti.com",
-    "password": "Eleo123"
+    "email": "archivoeleo@gmail.com",
+    "password": "en123"
 }
 
 ###

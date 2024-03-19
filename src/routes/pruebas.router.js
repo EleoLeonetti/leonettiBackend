@@ -1,7 +1,19 @@
 const { Router } = require('express')
 const { faker }  = require('@faker-js/faker')
+const { sendEmail } = require('../utils/sendEmail')
+
+
 
 const router = Router()
+
+router.get('/email', (req, res) => {
+    sendEmail('archivoeleo@gmail.com', 'email de prueba', '<h1>Bienvenido</h1>')
+    res.send('Email enviado')
+})
+
+
+
+
 
 const generateProduct = () => {
     return{

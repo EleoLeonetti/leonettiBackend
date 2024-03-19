@@ -13,7 +13,9 @@ dotenv.config({
 const configObject = {
     PORT: process.env.PORT || 4000,
     mongo_url: process.env.MONGO_URL,
-    jwt_secret_key: process.env.JWT_SECRET_KEY
+    jwt_secret_key: process.env.JWT_SECRET_KEY,
+    gmail_user: process.env.GMAIL_USER,
+    gmail_password: process.env.GMAIL_PASSWORD
 }
 
 const connectDb = async() => {

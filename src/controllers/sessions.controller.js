@@ -95,6 +95,7 @@ class SessionController {
             res.status(500).send({status: 'error', message: error.message})
         }
     }
+    
 }
 
 module.exports = SessionController

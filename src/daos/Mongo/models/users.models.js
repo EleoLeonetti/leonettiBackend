@@ -4,7 +4,6 @@ const mongoosePaginate = require('mongoose-paginate-v2')
 const usersCollection = 'users'
 
 const UsersSchema = Schema({
-    //fullname: {type: String, require: true}
     first_name: {
         type: String,
         index: true,
@@ -28,7 +27,7 @@ const UsersSchema = Schema({
     },
     role: {
         type: String,
-        enum: ['user','admin'],
+        enum: ['user','admin', 'premium'],
         default: 'user'
     },
     cart: {
