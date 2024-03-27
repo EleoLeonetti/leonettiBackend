@@ -11,6 +11,11 @@ const { chatModel, messageModel } = require('./daos/Mongo/models/chat.models.js'
 const { initializePassport, initializePassportGit }      = require("./config/passport.config.js")
 const cors = require('cors')
 
+//importaciones de swagger
+const swaggerJsDoc = require('swagger-jsdoc')
+const swaggerUiExpress = require('swagger-ui-express')
+
+
 const app        = express()
 const PORT       = configObject.PORT
 const httpServer = app.listen(PORT, err => {
@@ -26,6 +31,22 @@ app.use(express.urlencoded({ extended: true }))
 app.use(express.static('./src/public'))
 app.use(cookieParser('p@l@br@Secret@'))
 app.use(cors())
+
+//Configuracion swagger 
+const swaggerOptions = {
+    definition: {
+        openapi: '3.0.1',
+        info: {
+            title: 'Documentación de app Adoptame',
+            description: 'Api Docs para Adoptame'
+        }
+    },
+    apis: [`${__dirname}/docs/**/*.yaml`]
+}
+
+const specs = swaggerJsDoc(swaggerOptions)
+
+app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs))
 
 
 initializePassport()

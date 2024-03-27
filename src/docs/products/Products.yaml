@@ -1,0 +1,116 @@
+paths:
+  /api/products/:
+    get:
+      summary: Obtiene todos los productos
+      tags:
+        - Products
+      responses:
+        "200":
+          description: Los productos fueron obtenidos correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Products'
+        "500":  
+          description: error interno del server, usualmente por query defectuosa. 
+    post:
+      summary: Crea un nuevo Producto
+      tags: 
+        - Products
+      requestBody: 
+        required: true
+        content:
+          application/json:
+            schema: 
+              $ref: "#/components/requestBodies/updateProduct"
+      responses: 
+        "201": 
+          description: El producto fue creado correctamente  
+
+  /api/products/{pid}:
+    get:
+      summary: Obtiene un producto a partir de un pid
+      tags: 
+        - Products
+      parameters: 
+        - name: pid
+          in: path
+          required: true
+          description: El id del producto que desea solicitar
+          schema: 
+            type: string
+      responses: 
+        "200":
+          description: El producto fue obtenido correctamente
+          content: 
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/Product"
+
+
+components:
+  schemas: 
+    Product: 
+      type: object
+      properties: 
+        _id: 
+          type: string
+          description: Id autogenerado de Mongo.
+        title: 
+          type: string
+          description: Nombre del producto.
+        description: 
+          type: string
+          description: Descripcion del producto.
+        code: 
+          type: string
+          description: Codigo del producto.
+        price: 
+          type: number
+          description: Precio del producto.
+        stock: 
+          type: number
+          description: Cantidad de productos disponibles.
+        category: 
+          type: string
+          description: Categoria del producto.
+      example: 
+        _id: ObjectId("fajsñldsadfjasaasdfjasldfa")
+        title: Producto 100
+        description: Este es el producto 100
+        code: abc100  
+        price: 100  
+        stock: 100  
+        category: Producto A  
+          
+  requestBodies: 
+    updateProduct: 
+      type: object
+      properties:  
+        title: 
+          type: string
+          description: Nombre del producto.
+        description: 
+          type: string
+          description: Descripcion del producto.
+        code: 
+          type: string
+          description: Codigo del producto.
+        price: 
+          type: number
+          description: Precio del producto.
+        stock: 
+          type: number
+          description: Cantidad de productos disponibles.
+        category: 
+          type: string
+          description: Categoria del producto.
+      example: 
+        title: Producto 100
+        description: Este es el producto 100
+        code: abc100  
+        price: 100  
+        stock: 100  
+        category: Producto A

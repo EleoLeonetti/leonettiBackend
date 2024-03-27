@@ -20,6 +20,7 @@ router.use('/api/tickets',  ticketsRouter)
 router.use('/api/messages', passportCall('jwt'), authorizationJwt('user'), messagesRouter)
 router.use('/api/pruebas',  pruebasRouter)
 
+
 router.use((err, req, res, next) =>{
     console.log(err)
     res.status(500).send(`Error Server ${err}`)

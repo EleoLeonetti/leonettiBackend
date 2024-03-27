@@ -1,0 +1,77 @@
+paths:
+  /api/carts/:
+    get:
+      summary: Obtiene todos los carritos
+      tags:
+        - Carts
+      responses:
+        "200":
+          description: Los carritos fueron obtenidos correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Carts'
+        "500":  
+          description: error interno del server, usualmente por query defectuosa. 
+    post:
+      summary: Crea un nuevo Cart
+      tags: 
+        - Carts
+      requestBody: 
+        required: true
+        content:
+          application/json:
+            schema: 
+              $ref: "#/components/requestBodies/updateCart"
+      responses: 
+        "201": 
+          description: El carrito fue creado correctamente  
+
+  /api/carts/{cid}:
+    get:
+      summary: Obtiene un carrito a partir de un cid
+      tags: 
+        - Carts
+      parameters: 
+        - name: cid
+          in: path
+          required: true
+          description: El id del carrito que desea solicitar
+          schema: 
+            type: string
+      responses: 
+        "200":
+          description: El carrito fue obtenido correctamente
+          content: 
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/Cart"
+
+
+components:
+  schemas: 
+    Product: 
+      type: object
+      properties: 
+        _id: 
+          type: string
+          description: Id autogenerado de Mongo.
+        products: 
+          type: array
+          description: Productos en el carrito.
+        
+      example: 
+        _id: ObjectId("fajsñldsadfjasaasdfjasldfa")
+        products: []
+          
+  requestBodies: 
+    updateCart: 
+      type: object
+      products:  
+        products: 
+          type: array
+          description: Productos en el carrito
+      example: 
+        products: []
